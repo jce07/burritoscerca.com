@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurritosCerca - ¿Qué se te antoja hoy?</title>
+    
+    <!-- Favicon and PWA -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#06d6a0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BurritosCerca">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Busca y encuentra los mejores vendedores de comida callejera mexicana. Tacos, elotes, quesadillas, raspados y más.">
+    <meta name="keywords" content="buscar comida, tacos cerca, elotes, quesadillas, comida callejera, street food mexicano">
+    
+    <link rel="stylesheet" href="app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="burritoscerca-logo.png" alt="BurritosCerca" style="height: 50px; width: auto;">
+            </div>
+            <nav class="nav">
+                <button class="btn-vendor" onclick="openVendorModal()">
+                    <span>📍</span> Poner Puesto
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">¿Dónde está tu puesto favorito?</h2>
+                <p class="hero-subtitle">Encuentra vendedores ambulantes de comida mexicana en tu barrio</p>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Buscar tacos, elotes, raspados..." />
+                        <button class="search-btn" onclick="searchFood()">Buscar Comida</button>
+                    </div>
+                </div>
+
+                <!-- Popular Searches -->
+                <div class="popular-searches">
+                    <span class="popular-label">Búsquedas populares:</span>
+                    <div class="popular-tags">
+                        <span class="tag" onclick="quickSearch('tacos')">Tacos</span>
+                        <span class="tag" onclick="quickSearch('elotes')">Elotes</span>
+                        <span class="tag" onclick="quickSearch('raspados')">Raspados</span>
+                        <span class="tag" onclick="quickSearch('hot dogs')">Hot Dogs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vendors Section -->
+    <section class="vendors">
+        <div class="container">
+            <div class="vendors-header">
+                <h3>🚚 Puestos Callejeros Activos</h3>
+                <span class="vendor-count" id="vendorCount">6 vendedores encontrados</span>
+            </div>
+            
+            <div class="vendors-grid" id="vendorsGrid">
+                <!-- Vendor cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Vendor Modal -->
+    <div class="modal" id="vendorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🚚 Registrar tu Puesto Callejero</h3>
+                <button class="close-btn" onclick="closeVendorModal()">&times;</button>
+            </div>
+            
+            <form class="vendor-form" id="vendorForm">
+                <div class="form-section">
+                    <h4>📍 Información del Puesto</h4>
+                    <div class="form-group">
+                        <label>Nombre del Puesto</label>
+                        <input type="text" id="vendorName" placeholder="Ej: Tacos Doña María, Elotes El Chavo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>¿Dónde te ubicas?</label>
+                        <input type="text" id="vendorLocation" placeholder="Ej: Esquina de 5ta y Revolución, frente al Oxxo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Horario y Especialidad</label>
+                        <textarea id="vendorDescription" placeholder="Ej: Lunes a Sábado 6pm-11pm. Especialidad en tacos de suadero"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4>🍽️ Menú</h4>
+                    <div id="menuItems">
+                        <div class="menu-item">
+                            <div class="form-row">
+                                <input type="text" placeholder="Nombre del platillo" class="item-name" required>
+                                <input type="number" placeholder="Precio" class="item-price" step="0.01" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="image-upload-container">
+                                    <label class="image-upload-label">
+                                        📷 Subir foto del platillo
+                                        <input type="file" accept="image/*" class="item-image" onchange="previewImage(this)">
+                                    </label>
+                                    <div class="image-preview">
+                                        <span class="preview-placeholder">Vista previa</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-item-btn" onclick="addMenuItem()">+ Agregar Platillo</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeVendorModal()">Cancelar</button>
+                    <button type="submit" class="btn-submit">🚚 Activar mi Puesto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

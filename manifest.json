@@ -1,0 +1,46 @@
+{
+  "name": "BurritosCerca - Mexican Street Food Finder",
+  "short_name": "BurritosCerca",
+  "description": "Find authentic Mexican street food vendors near you! Discover tacos, elotes, quesadillas and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ff6b35",
+  "theme_color": "#06d6a0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle", "business"],
+  "lang": "es-MX",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshot-narrow.png", 
+      "sizes": "640x1136",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+}

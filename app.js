@@ -26,9 +26,10 @@ class BurritosCerca {
 
     init() {
         this.loadVendors();
+        this.addSampleData();
         this.renderVendors();
         this.setupEventListeners();
-        this.addSampleData();
+        console.log('BurritosCerca initialized with', this.vendors.length, 'vendors');
     }
 
     // Event Listeners
@@ -36,7 +37,7 @@ class BurritosCerca {
         // Search functionality
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.querySelector('.search-btn');
-        
+
         searchBtn.addEventListener('click', () => this.searchFood());
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.searchFood();
@@ -59,7 +60,7 @@ class BurritosCerca {
     // Search functionality
     searchFood() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        
+
         if (!query) {
             this.filteredVendors = [...this.vendors];
         } else {
@@ -68,7 +69,7 @@ class BurritosCerca {
                 return searchText.includes(query) || this.matchesKeywords(query);
             });
         }
-        
+
         this.renderVendors();
         this.updateVendorCount();
     }
@@ -81,7 +82,7 @@ class BurritosCerca {
 
     // Check if query matches food keywords
     matchesKeywords(query) {
-        return this.foodKeywords.some(keyword => 
+        return this.foodKeywords.some(keyword =>
             keyword.includes(query) || query.includes(keyword)
         );
     }
@@ -89,7 +90,7 @@ class BurritosCerca {
     // Vendor Management
     addVendor() {
         const formData = this.getFormData();
-        
+
         if (!this.validateVendorData(formData)) {
             alert('Por favor completa todos los campos requeridos');
             return;
@@ -107,7 +108,7 @@ class BurritosCerca {
         this.renderVendors();
         this.closeVendorModal();
         this.resetForm();
-        
+
         // Show success message
         this.showNotification('¡Tu puesto callejero está activo! 🚚🌮');
     }
@@ -115,16 +116,16 @@ class BurritosCerca {
     getFormData() {
         const menuItems = [];
         const menuElements = document.querySelectorAll('.menu-item');
-        
+
         menuElements.forEach(item => {
             const name = item.querySelector('.item-name').value.trim();
             const price = parseFloat(item.querySelector('.item-price').value);
             const imagePreview = item.querySelector('.image-preview img');
             const image = imagePreview ? imagePreview.src : null;
-            
+
             if (name && price) {
-                menuItems.push({ 
-                    name, 
+                menuItems.push({
+                    name,
                     price: price.toFixed(2),
                     image: image
                 });
@@ -145,7 +146,7 @@ class BurritosCerca {
 
     extractSpecialties(menuItems) {
         const specialties = new Set();
-        
+
         menuItems.forEach(item => {
             const itemName = item.name.toLowerCase();
             this.foodKeywords.forEach(keyword => {
@@ -166,7 +167,7 @@ class BurritosCerca {
     renderVendors() {
         const grid = document.getElementById('vendorsGrid');
         const vendorsToShow = this.filteredVendors.length > 0 ? this.filteredVendors : this.vendors;
-        
+
         if (vendorsToShow.length === 0) {
             grid.innerHTML = `
                 <div class="no-vendors">
@@ -182,7 +183,7 @@ class BurritosCerca {
     }
 
     createVendorCard(vendor) {
-        const specialtyTags = vendor.specialties.map(specialty => 
+        const specialtyTags = vendor.specialties.map(specialty =>
             `<span class="specialty-tag">${specialty}</span>`
         ).join('');
 
@@ -214,11 +215,11 @@ class BurritosCerca {
 
     calculatePriceRange(menuItems) {
         if (menuItems.length === 0) return 'Consultar precios';
-        
+
         const prices = menuItems.map(item => parseFloat(item.price));
         const min = Math.min(...prices);
         const max = Math.max(...prices);
-        
+
         if (min === max) return `${min}`;
         return `${min} - ${max}`;
     }
@@ -227,7 +228,7 @@ class BurritosCerca {
         const vendor = this.vendors.find(v => v.id === vendorId);
         if (!vendor) return;
 
-        const menuHtml = vendor.menuItems.map(item => 
+        const menuHtml = vendor.menuItems.map(item =>
             `<div class="menu-item-display">
                 ${item.image ? `<div class="menu-item-image"><img src="${item.image}" alt="${item.name}"></div>` : ''}
                 <div class="menu-item-info">
@@ -453,11 +454,15 @@ function quickSearch(keyword) {
     app.quickSearch(keyword);
 }
 
+function searchFood() {
+    app.searchFood();
+}
+
 function previewImage(input) {
     const preview = input.parentElement.querySelector('.image-preview');
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
         };
         reader.readAsDataURL(input.files[0]);

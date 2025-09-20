@@ -66,7 +66,7 @@ class BurritosCerca {
         } else {
             this.filteredVendors = this.vendors.filter(vendor => {
                 const searchText = `${vendor.name} ${vendor.description} ${vendor.specialties.join(' ')} ${vendor.menuItems.map(item => item.name).join(' ')}`.toLowerCase();
-                return searchText.includes(query) || this.matchesKeywords(query);
+                return searchText.includes(query);
             });
         }
 
@@ -80,12 +80,7 @@ class BurritosCerca {
         this.searchFood();
     }
 
-    // Check if query matches food keywords
-    matchesKeywords(query) {
-        return this.foodKeywords.some(keyword =>
-            keyword.includes(query) || query.includes(keyword)
-        );
-    }
+    // Check if query matches food keywords (removed - was causing false matches)
 
     // Vendor Management
     addVendor() {

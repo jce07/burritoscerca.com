@@ -1,0 +1,11 @@
+{
+  "name": "burritoscerca-v2",
+  "version": "2.0.0",
+  "description": "Mexican street food finder with automated Payhip integration",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "scripts": {
+    "build": "echo 'No build step needed'"
+  }
+}

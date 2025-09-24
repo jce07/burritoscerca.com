@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     // Initialize Supabase client
     const supabase = createClient(
       'https://ojshbaedxjapfrkmfcfq.supabase.co',
-      process.env.SUPABASE_ANON_KEY
+      process.env.SUPABASE_SERVICE_ROLE_KEY
     )
 
     const { email } = JSON.parse(event.body)
@@ -34,14 +34,14 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Missing email' })
+        body: JSON.stringify({ error: 'Email is required' })
       }
     }
 
     // Check if customer is verified
     const { data, error } = await supabase
       .from('verified_customers')
-      .select('id, email, customer_name, payment_date, verification_method')
+      .select('*')
       .eq('email', email.toLowerCase().trim())
       .eq('is_active', true)
       .single()
@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
+        body: JSON.stringify({ 
           verified: false,
           message: 'Customer not found or not verified'
         })
@@ -72,7 +72,7 @@ exports.handler = async (event, context) => {
     }
 
   } catch (error) {
-    console.error('Function error:', error)
+    console.error('Check verification error:', error)
     return {
       statusCode: 500,
       headers,

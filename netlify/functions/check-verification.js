@@ -1,7 +1,7 @@
 // Netlify Function: Check if customer is verified
 const { createClient } = require('@supabase/supabase-js')
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   // Handle CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           verified: false,
           message: 'Customer not found or not verified'
         })

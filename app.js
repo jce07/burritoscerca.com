@@ -1,9 +1,13 @@
-// BurritosCerca - Modern Mexican Food Finder App
+tosCerca - Modern Mexican Food Finder App v2.1
 class BurritosCerca {
     constructor() {
         this.vendors = [];
         this.filteredVendors = [];
         this.storageKey = 'burritoscerca_vendors';
+        
+        // Supabase configuration - Replace with your actual values
+        this.supabaseUrl = 'https://ojshbaedxjapfrkmfcfq.supabase.co';
+        this.supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qc2hiYWVkeGphcGZya21mY2ZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1NjI5NzgsImV4cCI6MjA3NDEzODk3OH0.K1L6KQfqPkkvYLfMuuBDzjFS6RnTfhxcWhQ-f1gge3U';
         this.foodKeywords = [
             // Tacos callejeros
             'tacos', 'suadero', 'tripas', 'cabeza', 'lengua', 'adobada', 'al pastor',
@@ -83,13 +87,26 @@ class BurritosCerca {
     // Check if query matches food keywords (removed - was causing false matches)
 
     // Vendor Management
-    addVendor() {
+    async addVendor() {
+        // Check if user is verified first
+        const email = prompt('Ingresa el email que usaste en Payhip para comprar:');
+        if (!email) return;
+
+        const isVerified = await this.checkVerification(email);
+        if (!isVerified) {
+            alert('No encontramos tu compra. Asegúrate de usar el mismo email de Payhip.\n\nSi acabas de comprar, espera 2-3 minutos para la verificación automática.');
+            return;
+        }
+
         const formData = this.getFormData();
 
         if (!this.validateVendorData(formData)) {
             alert('Por favor completa todos los campos requeridos');
             return;
         }
+
+        // Add customer email to vendor data
+        formData.customerEmail = email.toLowerCase().trim();
 
         const vendor = {
             id: Date.now().toString(),
@@ -98,14 +115,64 @@ class BurritosCerca {
             createdAt: new Date().toISOString()
         };
 
-        this.vendors.unshift(vendor);
-        this.saveVendors();
-        this.renderVendors();
-        this.closeVendorModal();
-        this.resetForm();
+        // Save to Supabase instead of localStorage
+        const success = await this.saveVendorToSupabase(vendor);
+        
+        if (success) {
+            this.vendors.unshift(vendor);
+            this.renderVendors();
+            this.closeVendorModal();
+            this.resetForm();
+            this.showNotification('¡Tu puesto callejero está activo! 🚚🌮');
+        } else {
+            alert('Error al guardar tu puesto. Intenta de nuevo.');
+        }
+    }
 
-        // Show success message
-        this.showNotification('¡Tu puesto callejero está activo! 🚚🌮');
+    async checkVerification(email) {
+        try {
+            const response = await fetch('https://burritoscerca.com/.netlify/functions/check-verification', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.supabaseAnonKey}`
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            return result.verified;
+        } catch (error) {
+            console.error('Verification check failed:', error);
+            return false;
+        }
+    }
+
+    async saveVendorToSupabase(vendor) {
+        try {
+            const response = await fetch(`${this.supabaseUrl}/rest/v1/vendors`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.supabaseAnonKey}`,
+                    'apikey': this.supabaseAnonKey
+                },
+                body: JSON.stringify({
+                    customer_email: vendor.customerEmail,
+                    name: vendor.name,
+                    location: vendor.location,
+                    description: vendor.description,
+                    menu_items: vendor.menuItems,
+                    specialties: vendor.specialties,
+                    rating: parseFloat(vendor.rating)
+                })
+            });
+
+            return response.ok;
+        } catch (error) {
+            console.error('Failed to save vendor:', error);
+            return false;
+        }
     }
 
     getFormData() {
